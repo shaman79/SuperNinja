@@ -1,20 +1,20 @@
 # SuperNinja
 
-A competitive **Fruit Ninja clone** for TUIO multitouch displays, designed for table mode gameplay. Two players stand on opposite sides of the screen and compete to slice the most fruits while avoiding bombs!
-
-![SuperNinja Game](docs/screenshot.png)
+A competitive **Fruit Ninja clone** for TUIO multitouch displays, designed for table mode gameplay. Two players stand on opposite **short edges** of the screen (left and right) and compete to slice the most fruits while avoiding bombs!
 
 ## Features
 
-- **Competitive Multiplayer**: Two players compete simultaneously on opposite sides of the screen
+- **Competitive Multiplayer**: Two players compete simultaneously on opposite sides (left vs right)
 - **TUIO Protocol Support**: Works with any TUIO-enabled multitouch device
+- **Colorful Emoji Fruits**: Beautiful fruit emojis from Google Noto Emoji project
+- **Mirrored Fruit Spawning**: Both players get the same fruits for fair competition
 - **Beautiful Visual Effects**: Juice splashes, explosions, blade trails, and particle effects
-- **Multiple Fruit Types**: Various fruits with different colors and juice effects
+- **Multiple Fruit Types**: 6 different fruits with unique point values
 - **Bomb Hazards**: Slice bombs and lose points!
-- **Special Fruits**: Star fruits give bonus points with sparkle effects
+- **Special Star Fruits**: Give bonus points with sparkle effects
 - **Combo System**: Chain slices for bonus points
 - **Critical Hits**: Perfect slices earn extra points
-- **3 Rounds**: 60 seconds each, player with most rounds won wins
+- **3 Rounds**: 60 seconds each, with increasing difficulty
 - **Score Popups**: Floating score indicators show points earned
 - **Screen Shake**: Dramatic bomb explosion effects
 
@@ -73,10 +73,15 @@ java -jar target/superninja-1.0.0.jar -d
 ## Controls
 
 ### Touch Controls (Primary)
-- **Bottom half of screen**: Player 1's zone
-- **Top half of screen**: Player 2's zone
+- **Left half of screen**: Player 1's zone (stands at left edge)
+- **Right half of screen**: Player 2's zone (stands at right edge)
 - **Swipe** to slice fruits!
 - **Avoid** swiping through bombs
+
+### Player Positions
+- Player 1: Top-left corner score display
+- Player 2: Bottom-right corner score display
+- Players face each other across the table
 
 ### Keyboard Controls
 - **ESC**: Exit game
@@ -93,13 +98,18 @@ java -jar target/superninja-1.0.0.jar -d
 Slice fruits for points while avoiding bombs. The player with the highest score after 3 rounds wins!
 
 ### Scoring
-| Action | Points |
-|--------|--------|
-| Regular Fruit | 10 pts |
-| Star Fruit (Special) | 50 pts |
-| Critical Hit Bonus | +15 pts |
-| Combo Bonus | +5 pts per chain |
-| Hit Bomb | -30 pts |
+| Fruit | Emoji | Points |
+|-------|-------|--------|
+| Grape | 🍇 | 8 pts |
+| Apple | 🍎 | 10 pts |
+| Orange | 🍊 | 10 pts |
+| Banana | 🍌 | 12 pts |
+| Watermelon | 🍉 | 15 pts |
+| Pineapple | 🍍 | 20 pts |
+| Star Fruit | ⭐ | 50 pts |
+| Bomb | 💣 | -50 pts |
+| Critical Hit | | +15 pts |
+| Combo Bonus | | +5 pts per chain |
 
 ### Game Flow
 1. **Touch to Start**: Both players touch the screen to begin
@@ -110,9 +120,11 @@ Slice fruits for points while avoiding bombs. The player with the highest score 
 
 ### Tips
 - Chain slices quickly for combo bonuses
-- Watch for bomb fuses - they glow red!
-- Star fruits are worth 5x regular fruits
-- Center slices have a chance for critical hits
+- Watch for bomb fuses - they're dangerous!
+- Star fruits (⭐) are worth 50 points
+- Pineapples (🍍) are the highest-scoring regular fruit at 20 pts
+- Both players get mirrored fruits for fair competition
+- Rounds 2 and 3 are progressively harder!
 
 ## Testing Without Touch Hardware
 
@@ -136,10 +148,11 @@ SuperNinja/
 │   ├── engine/
 │   │   └── GameEngine.java        # Core game logic
 │   ├── render/
-│   │   └── GameRenderer.java      # All rendering code
+│   │   ├── GameRenderer.java      # All rendering code
+│   │   └── EmojiLoader.java       # Loads and caches emoji images
 │   ├── objects/
 │   │   ├── GameObject.java        # Fruits, bombs, etc.
-│   │   ├── ObjectType.java        # Object type definitions
+│   │   ├── ObjectType.java        # Object type definitions with emojis
 │   │   ├── BladeTrail.java        # Blade swipe visualization
 │   │   └── Player.java            # Player state
 │   ├── effects/
@@ -155,8 +168,11 @@ SuperNinja/
 │       ├── TouchPoint.java        # Touch data
 │       ├── TouchListener.java     # Touch event interface
 │       └── InputSimulator.java    # Mouse/keyboard input
-├── lib/
-│   └── TUIO11_Client.jar          # TUIO library
+├── src/main/resources/
+│   └── emojis/                    # Emoji PNG images (Google Noto Emoji)
+│       ├── apple.png, orange.png, watermelon.png
+│       ├── banana.png, grape.png, pineapple.png
+│       ├── star.png, bomb.png
 ├── pom.xml                         # Maven build config
 └── README.md                       # This file
 ```
@@ -184,8 +200,9 @@ Key settings in `GameConfig.java`:
 ## Credits
 
 - Inspired by **Fruit Ninja** by Halfbrick Studios
+- Emoji images from **Google Noto Emoji** (Apache 2.0 License): https://github.com/googlefonts/noto-emoji
 - TUIO Protocol: http://www.tuio.org/
-- Based on **SuperPong** architecture: https://github.com/shaman79/SuperPong
+- Rendering architecture inspired by **SuperHockey**: https://github.com/nicokosi/SuperHockey
 
 ## License
 
