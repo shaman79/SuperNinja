@@ -101,6 +101,13 @@ public class EffectManager {
     }
     
     /**
+     * Add a custom text popup (for power-ups, special messages)
+     */
+    public void addTextPopup(double x, double y, String text, java.awt.Color color) {
+        scorePopups.add(new ScorePopup(x, y, text, color));
+    }
+    
+    /**
      * Get current screen shake offset
      */
     public double getShakeOffsetX() {

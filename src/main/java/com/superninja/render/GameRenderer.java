@@ -106,6 +106,11 @@ public class GameRenderer {
             obj.render(g2d);
         }
         
+        // Draw power-up objects
+        for (PowerUpObject obj : engine.getPowerUpObjects()) {
+            obj.render(g2d);
+        }
+        
         // Draw blade trails
         engine.getPlayer1Blade().render(g2d);
         engine.getPlayer2Blade().render(g2d);
@@ -115,6 +120,9 @@ public class GameRenderer {
         
         // Draw UI
         renderUI(g2d, engine);
+        
+        // Draw active power-up indicators
+        renderPowerUpIndicators(g2d, engine);
         
         // Draw state-specific overlays
         switch (engine.getState()) {
@@ -211,6 +219,68 @@ public class GameRenderer {
             g.setColor(new Color(255, 215, 0));
             g.setFont(new Font("Arial", Font.BOLD, 18));
             g.drawString("x" + player.getComboCount() + " COMBO", 0, 75);
+        }
+        
+        g.dispose();
+    }
+    
+    private void renderPowerUpIndicators(Graphics2D g2d, GameEngine engine) {
+        PowerUpState p1State = engine.getPlayer1PowerUps();
+        PowerUpState p2State = engine.getPlayer2PowerUps();
+        
+        // Render Player 1's active power-ups (left side, below score)
+        int p1X = 20;
+        int p1Y = 200;
+        renderPlayerPowerUps(g2d, p1State, p1X, p1Y, true);
+        
+        // Render Player 2's active power-ups (right side, above score from bottom)
+        int p2X = screenWidth - 20;
+        int p2Y = screenHeight - 200;
+        renderPlayerPowerUps(g2d, p2State, p2X, p2Y, false);
+    }
+    
+    private void renderPlayerPowerUps(Graphics2D g2d, PowerUpState state, int x, int y, boolean leftSide) {
+        int iconSize = 40;
+        int spacing = 50;
+        int index = 0;
+        
+        // Show shield if active
+        if (state.hasShield()) {
+            drawPowerUpIcon(g2d, PowerUpType.SHIELD, x, y + index * spacing, iconSize, 1.0, leftSide);
+            index++;
+        }
+        
+        // Show all timed effects
+        for (java.util.Map.Entry<PowerUpType, Double> entry : state.getActiveEffects().entrySet()) {
+            PowerUpType type = entry.getKey();
+            double remaining = entry.getValue();
+            double maxDuration = type.getDuration();
+            double progress = remaining / maxDuration;
+            
+            drawPowerUpIcon(g2d, type, x, y + index * spacing, iconSize, progress, leftSide);
+            index++;
+        }
+    }
+    
+    private void drawPowerUpIcon(Graphics2D g2d, PowerUpType type, int x, int y, int size, double progress, boolean leftSide) {
+        Graphics2D g = (Graphics2D) g2d.create();
+        
+        int drawX = leftSide ? x : x - size;
+        
+        // Background circle with progress
+        g.setColor(new Color(0, 0, 0, 150));
+        g.fillOval(drawX, y, size, size);
+        
+        // Progress arc
+        g.setColor(type.getColor());
+        g.setStroke(new BasicStroke(3));
+        int arcAngle = (int)(360 * progress);
+        g.drawArc(drawX, y, size, size, 90, -arcAngle);
+        
+        // Icon
+        java.awt.image.BufferedImage icon = EmojiLoader.getPowerUpEmoji(type, size - 8);
+        if (icon != null) {
+            g.drawImage(icon, drawX + 4, y + 4, null);
         }
         
         g.dispose();

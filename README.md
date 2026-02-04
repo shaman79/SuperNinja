@@ -202,7 +202,7 @@ Key settings in `GameConfig.java`:
 - Inspired by **Fruit Ninja** by Halfbrick Studios
 - Emoji images from **Google Noto Emoji** (Apache 2.0 License): https://github.com/googlefonts/noto-emoji
 - TUIO Protocol: http://www.tuio.org/
-- Rendering architecture inspired by **SuperHockey**: https://github.com/nicokosi/SuperHockey
+- Rendering architecture inspired by **SuperHockey**: https://github.com/shaman79/SuperHockey
 
 ## License
 

@@ -56,6 +56,20 @@ public class ScorePopup {
         }
     }
     
+    /**
+     * Constructor for custom text popups (power-ups, special messages)
+     */
+    public ScorePopup(double x, double y, String text, Color color) {
+        this.x = x;
+        this.y = y;
+        this.text = text;
+        this.color = color;
+        this.fontSize = 28;
+        this.maxLife = 1.2;
+        this.life = maxLife;
+        this.velocityY = -60;
+    }
+    
     public void update(double deltaTime) {
         life -= deltaTime;
         y += velocityY * deltaTime;

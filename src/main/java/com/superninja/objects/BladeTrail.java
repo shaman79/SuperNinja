@@ -71,6 +71,14 @@ public class BladeTrail {
      * Check if the trail intersects with a game object
      */
     public boolean intersects(GameObject obj) {
+        return intersectsWithMultiplier(obj, 1.0);
+    }
+    
+    /**
+     * Check if the trail intersects with a game object, with size multiplier
+     * @param sizeMultiplier Multiplies the effective hitbox size (for power-ups)
+     */
+    public boolean intersectsWithMultiplier(GameObject obj, double sizeMultiplier) {
         if (points.size() < 2) return false;
         
         // Check last few segments
@@ -79,12 +87,36 @@ public class BladeTrail {
             TrailPoint p1 = points.get(i - 1);
             TrailPoint p2 = points.get(i);
             
-            if (obj.intersectsLine(p1.x, p1.y, p2.x, p2.y)) {
+            if (intersectsLineWithMultiplier(obj, p1.x, p1.y, p2.x, p2.y, sizeMultiplier)) {
                 return true;
             }
         }
         
         return false;
+    }
+    
+    private boolean intersectsLineWithMultiplier(GameObject obj, double x1, double y1, double x2, double y2, double sizeMultiplier) {
+        double objX = obj.getX();
+        double objY = obj.getY();
+        double radius = (obj.getSize() / 2.0) * sizeMultiplier;
+        
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+        double fx = x1 - objX;
+        double fy = y1 - objY;
+        
+        double a = dx * dx + dy * dy;
+        double b = 2 * (fx * dx + fy * dy);
+        double c = fx * fx + fy * fy - radius * radius;
+        
+        double discriminant = b * b - 4 * a * c;
+        if (discriminant < 0) return false;
+        
+        double sqrtDisc = Math.sqrt(discriminant);
+        double t1 = (-b - sqrtDisc) / (2 * a);
+        double t2 = (-b + sqrtDisc) / (2 * a);
+        
+        return (t1 >= 0 && t1 <= 1) || (t2 >= 0 && t2 <= 1);
     }
     
     /**
@@ -115,6 +147,38 @@ public class BladeTrail {
         if (dt <= 0) return 0;
         
         return Math.sqrt(dx * dx + dy * dy) / dt;
+    }
+    
+    /**
+     * Get current X position
+     */
+    public double getCurrentX() {
+        if (points.isEmpty()) return 0;
+        return points.get(points.size() - 1).x;
+    }
+    
+    /**
+     * Get current Y position
+     */
+    public double getCurrentY() {
+        if (points.isEmpty()) return 0;
+        return points.get(points.size() - 1).y;
+    }
+    
+    /**
+     * Get last X position
+     */
+    public double getLastX() {
+        if (points.size() < 2) return getCurrentX();
+        return points.get(points.size() - 2).x;
+    }
+    
+    /**
+     * Get last Y position
+     */
+    public double getLastY() {
+        if (points.size() < 2) return getCurrentY();
+        return points.get(points.size() - 2).y;
     }
     
     /**
